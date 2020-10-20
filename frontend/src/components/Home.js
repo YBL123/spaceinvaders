@@ -5,8 +5,8 @@ const Home = () => {
   const [gridState, setGridState] = useState([])
 
   useEffect(() => {
-    const gridWidth = 6
-    const gridHeight = 6
+    const gridWidth = 15
+    const gridHeight = 10
     let grid = []
 
 
@@ -26,7 +26,7 @@ const Home = () => {
     //* reversing the order of the cells so that the bottom left corner will start at 0,0
     //* setting the reversed cells to state
     setGridState(grid.reverse())
-    // setGridState(grid)
+    // setGridState(grid) 
   }, [])
 
 
