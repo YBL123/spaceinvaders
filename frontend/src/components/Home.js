@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react'
 const Home = () => {
 
   const [gridState, setGridState] = useState([])
+  const [shipState, setShipState] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
 
   useEffect(() => {
     const gridWidth = 16
     const gridHeight = 11
     let grid = []
-
 
     //* creating a 2 dimentional grid. x and y. 
     //* creating arrays within an array. The first array represents the y axis and the arrays nested within represent the x axis.
@@ -18,18 +20,42 @@ const Home = () => {
       for (let ii = 0; ii < gridWidth; ii++) {
         grid[i].push({
           //* i represents the first loop which creates the y axis array. ii represents the second loop which creates the x axis arrays
-          x: ii, y: i, active: false //! ref: highlight? may not have used it in the end
+          x: ii, y: i
         })
       }
     }
 
     //* reversing the order of the cells so that the bottom left corner will start at 0,0
     //* setting the reversed cells to state
+    grid[0][8] = 'ship'
     setGridState(grid.reverse())
-    // setGridState(grid) 
   }, [])
 
 
+  useEffect(() => {
+    const fetchShip = () => {
+      let res = []
+      let ships = []
+      //* mapping through array of rovers, and pushing the roverId, currentPosition and the empty roverMovements into the rovers array
+      res.map(ship => {
+        ships.push({
+          x: 0,
+          y: 0
+        })
+        setShipState(ships) //* setting the rovers array to state -> rovers is a local variable used inside the map above with the result set to state
+      })
+      setIsLoading(false)
+    }
+    //* if gridstate's length is larger than 1 then call fetchShip function
+    if (gridState.length > 1) {
+      fetchShip()
+    }
+  }, [gridState])
+
+
+  if(!gridState) {
+    return null
+  }
   return (
     <div className="app-wrap">
       <div className="title-logo-wrapper">
@@ -37,11 +63,14 @@ const Home = () => {
         <h1 className="title">SPACE INVADERS</h1>
       </div>
       <div className="grid-deploy-wrapper">
-        <div className='grid-wrapper'>
-          {gridState.map((cells, i) => {
-            return <GridRow key={i} cells={cells} />
-          })}
-        </div>
+        {/* <h1>{player}</h1> */}
+        {!isLoading ?
+          <div className='grid-wrapper'>
+            {gridState.map((cells, i) => {
+              return <GridRow key={i} cells={cells} ships={shipState} />
+            })}
+          </div>
+          : null}
       </div>
     </div>
 
@@ -63,12 +92,16 @@ export default Home
 // //* Returning GridCell 6 times as a result of cells.map
 
 const GridRow = (props) => {
-  const { cells } = props
+  const { cells, ships } = props
 
   let mainContent = (
     <div className="grid-cell-row">
       {
         cells.map((cell, i) => {
+          let shipObj
+          ships.map((ship) => {
+
+          })
           return <GridCell key={i} cell={cell}
           />
         })
