@@ -5,8 +5,8 @@ const Home = () => {
   const [gridState, setGridState] = useState([])
 
   useEffect(() => {
-    const gridWidth = 15
-    const gridHeight = 10
+    const gridWidth = 16
+    const gridHeight = 11
     let grid = []
 
 
