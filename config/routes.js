@@ -7,8 +7,8 @@ router.route('/ship') //* any route that comes in with that, if its a GET hand i
   .get(ship.index)
   .post(ship.create)
 
-// router.route('/ships/:id')
-//   .get(ships.show)
+router.route('/ship/:id')
+  .get(ship.show)
 //   .delete(ships.delete)
 
 // router.route('/ships/movement')

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
+import ShipNew from './ship/ShipNew'
+import { getShip } from '../lib/api'
+
 const Home = () => {
 
   const [gridState, setGridState] = useState([])
@@ -27,24 +30,31 @@ const Home = () => {
 
     //* reversing the order of the cells so that the bottom left corner will start at 0,0
     //* setting the reversed cells to state
-    grid[0][8] = 'ship'
     setGridState(grid.reverse())
   }, [])
 
 
   useEffect(() => {
-    const fetchShip = () => {
-      let res = []
-      let ships = []
-      //* mapping through array of rovers, and pushing the roverId, currentPosition and the empty roverMovements into the rovers array
-      res.map(ship => {
-        ships.push({
-          x: 0,
-          y: 0
+    const fetchShip = async () => {
+      try {
+        const res = await getShip()
+        let ships = []
+        //* mapping through array of rovers, and pushing the roverId, currentPosition and the empty roverMovements into the rovers array
+        res.data.map(ship => {
+          ships.push({
+            shipId: ship._id,
+            currentPosition: {
+              x: ship.x,
+              y: ship.y,
+              position: ship.position
+            }
+          })
+          setShipState(ship) //* setting the rovers array to state -> rovers is a local variable used inside the map above with the result set to state
         })
-        setShipState(ships) //* setting the rovers array to state -> rovers is a local variable used inside the map above with the result set to state
-      })
-      setIsLoading(false)
+        setIsLoading(false)
+      } catch (err) {
+        console.log(err)
+      }
     }
     //* if gridstate's length is larger than 1 then call fetchShip function
     if (gridState.length > 1) {
@@ -53,9 +63,6 @@ const Home = () => {
   }, [gridState])
 
 
-  if(!gridState) {
-    return null
-  }
   return (
     <div className="app-wrap">
       <div className="title-logo-wrapper">
@@ -63,7 +70,7 @@ const Home = () => {
         <h1 className="title">SPACE INVADERS</h1>
       </div>
       <div className="grid-deploy-wrapper">
-        {/* <h1>{player}</h1> */}
+        <ShipNew />
         {!isLoading ?
           <div className='grid-wrapper'>
             {gridState.map((cells, i) => {
